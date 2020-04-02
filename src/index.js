@@ -17,27 +17,27 @@ function Square(props){
     renderSquare(i) {
       return( <Square value={this.props.squares[i]} onClick={()=>this.props.onClick(i)}/>);
     }
+    createBoard(){
+      let board=[]
+      for(let i=0;i<3;++i)
+      {
+        let square=[];
+        for(let j=0;j<3;++j)
+          {
+            square.push(this.renderSquare(i*3+j))
+          }
+        board.push(<div className="board-row">{square}</div>)
+      }
+      return board
+
+    }
   
     render() {
 
   
       return (
         <div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+         { this.createBoard()}
         </div>
       );
     }
@@ -84,10 +84,10 @@ function Square(props){
       const winner=calculateWinner(current.squares);
       const moves=history.map((step,move)=>{
         const desc=move? 'Go to move #' +move :
-        'Go to game start';
+        'RESTART';
         return (
           <li key={move}>
-            <button onClick={()=> this.jumpTo(move)}>{desc}</button>
+            <span className="move" onClick={()=> this.jumpTo(move)}>{desc}</span>
           </li>
         );
       });
@@ -95,19 +95,26 @@ function Square(props){
       let status;
       if (winner)
       {
-        status ='Winner: '+winner;
+        if(winner==='draw')
+        {
+          status='DRAW'
+        }
+        else{
+          status ='WINNER : '+winner;
+        }
       }else{
         status = 'Next player: '+(this.state.xIsNext? 'X':'O');
 
       }
       return (
         <div className="game">
+          <h2>{status}</h2>
           <div className="game-board">
             <Board squares={current.squares}
             onClick={(i)=>this.handleClick(i)}/>
           </div>
           <div className="game-info">
-            <div>{status}</div>
+            
             <ol>{moves}</ol>
           </div>
         </div>
@@ -126,13 +133,21 @@ function Square(props){
       [0, 4, 8],
       [2, 4, 6],
     ];
+
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
       }
     }
-    return null;
+
+    for(let i=0;i<squares.length;++i)
+    {
+      if(!squares[i])
+        return null;
+
+    }
+    return 'draw';
   }
 
   // ========================================
