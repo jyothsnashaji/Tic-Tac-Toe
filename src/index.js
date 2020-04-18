@@ -74,6 +74,7 @@ function Square(props){
     }
     jumpTo(step){
       this.setState({
+        history:this.state.history.slice(0,step+1),
         stepNumber:step,
         xIsNext:step%2===0,
         colors:Array(9).fill('#fff'),
@@ -118,8 +119,15 @@ function Square(props){
       const current =history[this.state.stepNumber];
 
       const winner=this.state.winner;
-      const moves=history.map((step,move)=>{
-      const desc=move? 'Go to move #' +move :
+      let moves,desc;
+      if (winner)
+      {  moves= (<li key={0}>
+            <span className="move" onClick={()=> this.jumpTo(0)}>Play Again</span>
+          </li>)
+      }
+     else {
+      moves=history.map((step,move)=>{
+      desc=move? 'Go to move #' +move :
         'RESTART';
         return (
           <li key={move}>
@@ -127,6 +135,7 @@ function Square(props){
           </li>
         );
       });
+    }
 
       var status= winner? ((winner==='draw')? 'DRAW' : 'WINNER : '+winner) : 'Next player: '+(this.state.xIsNext? 'X':'O');
 
