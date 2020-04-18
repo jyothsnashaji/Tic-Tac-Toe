@@ -120,36 +120,30 @@ function Square(props){
 
       const winner=this.state.winner;
       let moves,desc;
-      if (winner)
-      {  moves= (<li key={0}>
-            <span className="move" onClick={()=> this.jumpTo(0)}>Play Again</span>
-          </li>)
-      }
-     else {
-      moves=history.map((step,move)=>{
-      desc=move? 'Go to move #' +move :
-        'RESTART';
+      moves=history.slice(2,).map((step,move)=>{
+      desc='Go to move #' +(move+1);
         return (
           <li key={move}>
-            <span className="move" onClick={()=> this.jumpTo(move)}>{desc}</span>
+            <span className="move" onClick={()=> this.jumpTo(move+1)}>{desc}</span>
           </li>
         );
       });
-    }
+      var b= winner? 'PLAY AGAIN':'RESTART';
 
       var status= winner? ((winner==='draw')? 'DRAW' : 'WINNER : '+winner) : 'Next player: '+(this.state.xIsNext? 'X':'O');
 
       return (
         <div className="game">
-          <h2>{status}</h2>
-          <div className="game-board">
+          <h2>{status}</h2><br></br>
+          <div> <div className="game-board">
             <Board squares={current.squares} colors={this.state.colors}
             onClick={(i)=>this.handleClick(i)}/>
           </div>
-          <div className="game-info">
-            
-            <ol>{moves}</ol>
-          </div>
+          <div className="game-info">            
+            <ol start="2">{moves}</ol>
+          </div><br></br></div>
+         
+          <button onClick={()=>this.jumpTo(0)} className="restart">{b}</button>
         </div>
       );
     }
